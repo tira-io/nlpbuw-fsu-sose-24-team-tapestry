@@ -2,6 +2,7 @@ from pathlib import Path
 
 from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
+import pandas as pd
 
 if __name__ == "__main__":
 
@@ -21,6 +22,9 @@ if __name__ == "__main__":
     targets_validation = tira.pd.truths(
         "nlpbuw-fsu-sose-24", "authorship-verification-validation-20240408-training"
     )
+
+    for i in range(10):
+        print(text_train)
 
     # classifying the data
     prediction = (
