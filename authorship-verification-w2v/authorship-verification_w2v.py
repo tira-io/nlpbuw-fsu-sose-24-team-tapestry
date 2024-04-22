@@ -70,7 +70,7 @@ if __name__ == "__main__":
     prediction = prediction.reset_index()
 
     # saving the prediction
-    output_directory = get_output_directory(str(Path("authorship-verification-jupyter.ipynb").parent))
+    output_directory = get_output_directory(str(Path("authorship-verification-w2v.py").parent))
     prediction.to_json(
             Path(output_directory) / "predictions_w2v.jsonl", orient="records", lines=True
     )
