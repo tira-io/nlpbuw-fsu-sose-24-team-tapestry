@@ -31,7 +31,7 @@ if __name__ == "__main__":
     written_class = targets_train == 0
 
     plt.plot(range(len(generated_class)), text_lens[generated_class])
-    plt.plot(range(len(generated_class)), text_lens[written_class])
+    plt.plot(range(len(written_class)), text_lens[written_class])
 
     plt.show()
 
