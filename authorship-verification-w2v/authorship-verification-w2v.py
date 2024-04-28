@@ -5,8 +5,10 @@ import pandas as pd
 import spacy
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import classification_report
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
+from warnings import simplefilter
+from sklearn.exceptions import ConvergenceWarning
+simplefilter("ignore", category=ConvergenceWarning)
 
 if __name__ == "__main__":
     tira = Client()
@@ -41,8 +43,8 @@ if __name__ == "__main__":
     for data in (concat_train, concat_val):
         data['word2vec_doc'] = data['text'].apply(lambda text: nlp(text).vector)
 
-    
-    model_logistic = LogisticRegression()
+    #@ignore_warnings(category=ConvergenceWarning)
+    #model_logistic = LogisticRegression()
 
     y_train = concat_train.generated
     y_val = concat_val.generated
@@ -53,9 +55,10 @@ if __name__ == "__main__":
     X_val = concat_val['word2vec_doc'].apply(lambda x: pd.Series(x))
     X_val.columns = X_val.columns.astype(str)
             
-    model_logistic.fit(X_train, y_train)
+    model = LogisticRegression()
+    model.fit(X_train, y_train)
             
-    y_pred = model_logistic.predict(X_val)
+    y_pred = model.predict(X_val)
 
     df = pd.DataFrame(y_pred)
     pred_val_df = pd.concat([text_validation, df], axis=1)
