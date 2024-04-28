@@ -43,9 +43,6 @@ if __name__ == "__main__":
     for data in (concat_train, concat_val):
         data['word2vec_doc'] = data['text'].apply(lambda text: nlp(text).vector)
 
-    #@ignore_warnings(category=ConvergenceWarning)
-    #model_logistic = LogisticRegression()
-
     y_train = concat_train.generated
     y_val = concat_val.generated
 
