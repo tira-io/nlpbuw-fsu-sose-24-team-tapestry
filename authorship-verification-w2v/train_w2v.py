@@ -5,6 +5,12 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from tira.rest_api_client import Client
+import pandas as pd
+import spacy
+from sklearn.linear_model import LogisticRegression
+from warnings import simplefilter
+from sklearn.exceptions import ConvergenceWarning
+simplefilter("ignore", category=ConvergenceWarning)
 
 if __name__ == "__main__":
 
