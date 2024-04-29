@@ -35,6 +35,8 @@ if __name__ == "__main__":
 
     plt.show()
 
+    plt.savefig('graph.png')
+
 
     '''
     for i in range(10):
