@@ -6,4 +6,5 @@ ADD model.joblib /code/model.joblib
 
 ENTRYPOINT [ "python3", "/code/run.py" ]
 
-RUN python3 -m spacy download en_core_web_md
+RUN pip3 install spacy \
+    && python3 -m spacy download en_core_web_md
