@@ -3,7 +3,6 @@ from pathlib import Path
 from joblib import load
 from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
-import spacy
 import pandas as pd
 
 if __name__ == "__main__":
@@ -14,17 +13,13 @@ if __name__ == "__main__":
         "nlpbuw-fsu-sose-24", "authorship-verification-validation-20240408-training"
     )
 
-    try:
-        nlp = spacy.load('en_core_web_md')
-    except OSError:
-        print('Downloading language model for the spaCy POS tagger')
-        from spacy.cli import download
-        download('en_core_web_md')
-        nlp = spacy.load('en_core_web_md')
+
+    nlp = load(Path(__file__).parent / "en_core_web_md")
 
     df['word2vec_doc'] = df['text'].apply(lambda text: nlp(text).vector)
     X_val = df['word2vec_doc'].apply(lambda x: pd.Series(x))
     X_val.columns = X_val.columns.astype(str)
+
 
     # Load the model and make predictions
     model = load(Path(__file__).parent / "model.joblib")
