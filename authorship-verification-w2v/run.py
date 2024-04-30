@@ -4,6 +4,7 @@ from joblib import load
 from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
 import pandas as pd
+import spacy
 
 if __name__ == "__main__":
 
@@ -14,7 +15,7 @@ if __name__ == "__main__":
     )
 
 
-    nlp = load(Path(__file__).parent / "en_core_web_md")
+    nlp = spacy.load("en_core_web_md")
 
     df['word2vec_doc'] = df['text'].apply(lambda text: nlp(text).vector)
     X_val = df['word2vec_doc'].apply(lambda x: pd.Series(x))
