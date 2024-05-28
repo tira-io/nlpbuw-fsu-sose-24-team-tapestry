@@ -61,8 +61,7 @@ labels = tira.pd.truths(
     "nlpbuw-fsu-sose-24", "language-identification-train-20240429-training"
 )
 
-text = text.set_index("id")
-df = text.join(labels.set_index("id"))
+df = text.merge(labels, how='left')
 df["pred_lang"] = pd.Series([""] * 320000, index=df.index)
 
 # Split texts in latin and non-latin languages
@@ -108,8 +107,7 @@ df.loc[pred_remainders, ('pred_lang')] = lang_remainders
 
 
 # Save the predictions
-df_ = df.loc[:, ('pred_lang')]
-df_ = df_.reset_index()
+df_ = df.loc[:, ('id', 'pred_lang')]
 output_directory = get_output_directory(str(Path(__file__).parent))
 df_.to_json(
     Path(output_directory) / "predictions.jsonl", orient="records", lines=True
