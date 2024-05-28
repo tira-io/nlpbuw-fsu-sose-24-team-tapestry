@@ -53,16 +53,11 @@ def classify_remainders(texts):
 
 # Load the data
 tira = Client()
-text = tira.pd.inputs(
-    "nlpbuw-fsu-sose-24", "language-identification-train-20240429-training"
-)
-#text = text.set_index("id")
-labels = tira.pd.truths(
+df = tira.pd.inputs(
     "nlpbuw-fsu-sose-24", "language-identification-train-20240429-training"
 )
 
-df = text.merge(labels, how='left')
-df.loc[:, ('pred_lang')] = ""
+df.loc[:, ('lang')] = ""
 
 # Split texts in latin and non-latin languages
 pred_latin = is_latin(df["text"])
@@ -79,11 +74,11 @@ text_latin_vec = vec.fit_transform(text_latin_cleaned)
 # Load the latin model and make predictions
 model = load(Path(__file__).parent / "model_latin.joblib")
 predictions = model.predict(text_latin_vec)
-df.loc[pred_latin, ('pred_lang')] = predictions
+df.loc[pred_latin, ('lang')] = predictions
 
 
 # Classify cyrillic languages
-pred_cyrillic = is_cyrillic(text['text'])
+pred_cyrillic = is_cyrillic(df['text'])
 text_cyrillic = df.loc[pred_cyrillic, ('text')]
 text_cyrillic_cleaned = PunctFreeLower(text_cyrillic)
 
@@ -94,7 +89,7 @@ text_cyrillic_vec = vec.fit_transform(text_cyrillic_cleaned)
 # Load the cyrillic model and make predictions
 model = load(Path(__file__).parent / "model_cyrillic.joblib")
 predictions = model.predict(text_cyrillic_vec)
-df.loc[pred_cyrillic, ('pred_lang')] = predictions
+df.loc[pred_cyrillic, ('lang')] = predictions
 
 # Classify remainders
 non_latin_blocks = {'el': '0370-03FF', 'zh': '4E00-9FFF', 'ko': 'AC00-D7AF', 'ur': '0600-06FF'}
@@ -103,11 +98,11 @@ pred_remainders = ~(pred_latin | pred_cyrillic)
 text_remainders = df.loc[pred_remainders, ('text')] # all non-latin, non-cyrillic texts
 
 lang_remainders = classify_remainders(text_remainders)
-df.loc[pred_remainders, ('pred_lang')] = lang_remainders
+df.loc[pred_remainders, ('lang')] = lang_remainders
 
 
 # Save the predictions
-df_ = df.loc[:, ('id', 'pred_lang')]
+df_ = df.loc[:, ('id', 'lang')]
 output_directory = get_output_directory(str(Path(__file__).parent))
 df_.to_json(
     Path(output_directory) / "predictions.jsonl", orient="records", lines=True
