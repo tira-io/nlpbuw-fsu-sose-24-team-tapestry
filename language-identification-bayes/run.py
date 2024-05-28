@@ -62,7 +62,7 @@ labels = tira.pd.truths(
 )
 
 df = text.merge(labels, how='left')
-df["pred_lang"] = pd.Series([""] * 320000, index=df.index)
+df.loc[:, ('pred_lang')] = ""
 
 # Split texts in latin and non-latin languages
 pred_latin = is_latin(df["text"])
